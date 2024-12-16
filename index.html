@@ -18,7 +18,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            background: url('/my-app/images/bg.png') no-repeat center center;
+            background: url('./images/bg.png') no-repeat center center;
             background-size: contain;
         }
         .card {
@@ -97,9 +97,9 @@
 
     <script>
         const cards = {
-            '/my-app/images/cards/big.png': 'おおきい',
-            '/my-app/images/cards/small.png': 'ちいさい',
-            '/my-app/images/cards/tall.png': 'たかい'
+            './images/cards/big.png': 'おおきい',
+            './images/cards/small.png': 'ちいさい',
+            './images/cards/tall.png': 'たかい'
         };
 
         let shuffledCards = shuffle(Object.keys(cards));
