@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>い形容詞活用アプリ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            transform: scale(1.5);
+            background-color: #ffb6c1;
+        }
+        h1 {
+            font-size: 18px;
+            color: white;
+        }
+        .matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 10px;
+            width: 80%;
+            max-width: 500px;
+        }
+        .cell-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 5px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #ccc;
+            background-color: #A4C4DE;
+            color: white;
+            height: 18px;
+            padding: 2px 0;
+        }
+        .cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            background-color: white;
+            position: relative;
+            width: 100%;
+            height: 125px;
+        }
+        .cell img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .answer {
+            font-size: 8px;
+            color: black;
+            display: block;
+            visibility: hidden;
+            align-self: center; /* テキストを中央に配置 */
+            margin-top: auto;
+        }
+        .answer.show {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>いけいようし かつよう</h1>
+    <div class="matrix">
+        <div class="cell-container">
+            <div class="header">かこ</div>
+            <div class="cell" id="past">
+                <img />
+                <span class="answer"></span>
+            </div>
+        </div>
+        <div class="cell-container">
+            <div class="header">です</div>
+            <div class="cell" id="desu">
+                <img />
+                <span class="answer"></span>
+            </div>
+        </div>
+        <div class="cell-container">
+            <div class="header">ひていかこ</div>
+            <div class="cell" id="negative-past">
+                <img />
+                <span class="answer"></span>
+            </div>
+        </div>
+        <div class="cell-container">
+            <div class="header">ひてい</div>
+            <div class="cell" id="negative">
+                <img />
+                <span class="answer"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cards = {
+            './cards/big.png': 'おおきい',
+            './cards/cheap.png': 'やすい',
+            './cards/expensive.png': 'たかい',
+            './cards/hurt.png': 'いたい',
+            './cards/small.png': 'ちいさい',
+            './cards/tall.png': 'たかい',
+            './cards/tasty.png': 'おいしい',
+            './cards/wide.png': 'ひろい',
+            './cards/happy.png': 'うれしい',
+            './cards/fun.png': 'たのしい',
+            './cards/narrow.png': 'せまい'
+        };
+
+        let currentIndex = 0;
+        let isAnswerDisplayed = false;
+        let currentCard = '';
+        let currentCellId = '';
+
+        function displayCard() {
+            const cells = document.querySelectorAll('.cell img');
+            const answers = document.querySelectorAll('.answer');
+            cells.forEach(cell => cell.style.display = 'none'); // 全てのカードを非表示
+            answers.forEach(answer => {
+                answer.style.visibility = 'hidden'; // 回答を非表示
+                answer.textContent = ''; // 回答をクリア
+            });
+
+            const cellIds = ['past', 'desu', 'negative-past', 'negative'];
+            currentCellId = cellIds[Math.floor(Math.random() * 4)];
+            const randomCell = document.getElementById(currentCellId);
+
+            let imageElement = randomCell.querySelector('img');
+            if (!imageElement) {
+                imageElement = document.createElement('img');
+                randomCell.appendChild(imageElement);
+            }
+
+            const cardKeys = Object.keys(cards);
+            currentIndex = Math.floor(Math.random() * cardKeys.length);
+            currentCard = cardKeys[currentIndex];
+
+            imageElement.src = currentCard;
+            imageElement.style.display = 'block';
+
+            isAnswerDisplayed = false;
+        }
+
+        function displayAnswer() {
+            const answerElement = document.getElementById(currentCellId).querySelector('.answer');
+            const adjective = cards[currentCard];
+
+            let answer = '';
+            switch (currentCellId) {
+                case 'desu':
+                    answer = `${adjective}です`;
+                    break;
+                case 'negative':
+                    answer = `${adjective.replace(/い$/, 'くないです')}`;
+                    break;
+                case 'past':
+                    answer = `${adjective.replace(/い$/, 'かったです')}`;
+                    break;
+                case 'negative-past':
+                    answer = `${adjective.replace(/い$/, 'くなかったです')}`;
+                    break;
+            }
+
+            answerElement.textContent = answer;
+            answerElement.style.visibility = 'visible';
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                event.preventDefault(); // デフォルトのスクロール動作を無効化
+                if (isAnswerDisplayed) {
+                    displayCard();
+                } else {
+                    displayAnswer();
+                    isAnswerDisplayed = true;
+                }
+            }
+        });
+
+        // 初期カード表示
+        displayCard();
+    </script>
+</body>
+</html>
